@@ -38,6 +38,7 @@ app.config.update(
 )
 bcrypt = Bcrypt(app)
 attempts: dict[tuple[str, str], deque[float]] = defaultdict(deque)
+_assistant_model: str | None = None
 
 
 def database():
@@ -220,6 +221,7 @@ def profile():
 
 @app.post("/api/assistant")
 def assistant():
+    global _assistant_model
     data = request.get_json(silent=True) or {}
     language = "en" if data.get("language") == "en" else "ru"
     errors = {
@@ -243,40 +245,52 @@ def assistant():
         "Ты образовательный помощник по кибербезопасности. Отвечай по-русски ясно и кратко. "
         "Не утверждай, что был проведён аудит, и не выдумывай факты о компании."
     )
-    payload = json.dumps({
-        "model": os.environ.get("LORD_GROQ_MODEL", "llama-3.3-70b-versatile"),
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": prompt},
-        ],
-        "temperature": 0.3,
-        "max_tokens": 700,
-    }).encode()
-    upstream = urlrequest.Request(
-        "https://api.groq.com/openai/v1/chat/completions",
-        data=payload,
-        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
-        method="POST",
-    )
-    try:
-        with urlrequest.urlopen(upstream, timeout=15) as response:
-            result = json.load(response)
-        answer = result["choices"][0]["message"]["content"]
-        return jsonify(answer=answer)
-    except urlerror.HTTPError as exc:
-        app.logger.warning("Groq rejected assistant request with HTTP %s", exc.code)
-        details = {
-            400: ("Groq rejected the request. Check the configured model.", "Groq отклонил запрос. Проверьте выбранную модель."),
-            401: ("Groq rejected the API key. Check LORD_GROQ_API_KEY in Render.", "Groq отклонил API-ключ. Проверьте LORD_GROQ_API_KEY в Render."),
-            403: ("The Groq project cannot access this model. Check model permissions.", "У проекта Groq нет доступа к модели. Проверьте разрешения модели."),
-            404: ("The configured Groq model was not found.", "Указанная модель Groq не найдена."),
-            429: ("Groq request limit reached. Try again later.", "Достигнут лимит запросов Groq. Повторите позже."),
-        }
-        en, ru = details.get(exc.code, ("Groq is temporarily unavailable.", "Groq временно недоступен."))
-        return jsonify(error=en if language == "en" else ru), 502
-    except (urlerror.URLError, KeyError, ValueError, TimeoutError):
-        app.logger.warning("Groq assistant request failed without an HTTP response")
-        return jsonify(error=errors["upstream"]), 502
+    preferred = os.environ.get("LORD_GROQ_MODEL", "openai/gpt-oss-120b")
+    models = list(dict.fromkeys(filter(None, (
+        _assistant_model, preferred, "openai/gpt-oss-120b", "qwen/qwen3.8-27b", "openai/gpt-oss-20b"
+    ))))
+    for model in models:
+        payload = json.dumps({
+            "model": model,
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": prompt},
+            ],
+            "temperature": 0.3,
+            "max_tokens": 700,
+        }).encode()
+        upstream = urlrequest.Request(
+            "https://api.groq.com/openai/v1/chat/completions",
+            data=payload,
+            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+            method="POST",
+        )
+        try:
+            with urlrequest.urlopen(upstream, timeout=15) as response:
+                result = json.load(response)
+            answer = result["choices"][0]["message"]["content"]
+            if not answer:
+                raise ValueError("Empty answer")
+            _assistant_model = model
+            return jsonify(answer=answer)
+        except urlerror.HTTPError as exc:
+            app.logger.warning("Groq model %s rejected with HTTP %s", model, exc.code)
+            if exc.code in (403, 404):
+                continue
+            details = {
+                400: ("Groq rejected the request. Check the configured model.", "Groq отклонил запрос. Проверьте выбранную модель."),
+                401: ("Groq rejected the API key. Check LORD_GROQ_API_KEY in Render.", "Groq отклонил API-ключ. Проверьте LORD_GROQ_API_KEY в Render."),
+                429: ("Groq request limit reached. Try again later.", "Достигнут лимит запросов Groq. Повторите позже."),
+            }
+            en, ru = details.get(exc.code, ("Groq is temporarily unavailable.", "Groq временно недоступен."))
+            return jsonify(error=en if language == "en" else ru), 502
+        except (urlerror.URLError, KeyError, ValueError, TimeoutError):
+            app.logger.warning("Groq assistant request failed without an HTTP response")
+            return jsonify(error=errors["upstream"]), 502
+    return jsonify(error=(
+        "No accessible Groq model was found for this API key."
+        if language == "en" else "Для этого API-ключа не найдена доступная модель Groq."
+    )), 502
 
 
 @app.get("/api/assistant/status")
