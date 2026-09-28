@@ -240,10 +240,12 @@ def assistant():
         return jsonify(error=errors["input"]), 400
     system_prompt = (
         "You are a cybersecurity education assistant. Reply clearly and concisely in English. "
-        "Never claim to have audited a system or invent facts about the company."
+        "Never claim to have audited a system or invent facts about the company. "
+        "Write natural prose with short paragraphs. Do not use Markdown, asterisks, pipes, tables, or decorative symbols."
         if language == "en" else
         "Ты образовательный помощник по кибербезопасности. Отвечай по-русски ясно и кратко. "
-        "Не утверждай, что был проведён аудит, и не выдумывай факты о компании."
+        "Не утверждай, что был проведён аудит, и не выдумывай факты о компании. "
+        "Пиши естественным языком и короткими абзацами. Не используй Markdown, звёздочки, вертикальные черты, таблицы и декоративные символы."
     )
     preferred = os.environ.get("LORD_GROQ_MODEL", "openai/gpt-oss-120b")
     models = list(dict.fromkeys(filter(None, (
