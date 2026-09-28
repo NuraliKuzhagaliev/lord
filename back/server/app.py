@@ -274,13 +274,19 @@ def assistant():
             _assistant_model = model
             return jsonify(answer=answer)
         except urlerror.HTTPError as exc:
+            raw_error = exc.read()
             try:
-                provider_error = json.loads(exc.read()).get("error") or {}
+                provider_error = json.loads(raw_error).get("error") or {}
                 provider_code = provider_error.get("code") or provider_error.get("type") or "unknown"
             except (ValueError, AttributeError):
                 provider_code = "unknown"
             provider_code = re.sub(r"[^a-zA-Z0-9_-]", "", str(provider_code))[:80]
-            app.logger.warning("Groq model %s rejected with HTTP %s (%s)", model, exc.code, provider_code)
+            content_type = exc.headers.get("Content-Type", "unknown").split(";")[0]
+            server_name = re.sub(r"[^a-zA-Z0-9_.-]", "", exc.headers.get("Server", "unknown"))[:60]
+            app.logger.warning(
+                "Groq model %s rejected with HTTP %s (%s), content_type=%s server=%s bytes=%s",
+                model, exc.code, provider_code, content_type, server_name, len(raw_error)
+            )
             if exc.code in (403, 404):
                 continue
             details = {
