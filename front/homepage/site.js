@@ -196,8 +196,7 @@
     atmosphere.setAttribute('aria-hidden', 'true');
     const grid = document.createElement('span');
     const orbit = document.createElement('span');
-    const core = document.createElement('span');
-    atmosphere.append(grid, orbit, core);
+    atmosphere.append(grid, orbit);
 
     const top = document.createElement('div');
     top.className = 'footer-topline';
