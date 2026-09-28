@@ -220,19 +220,33 @@ def profile():
 
 @app.post("/api/assistant")
 def assistant():
+    data = request.get_json(silent=True) or {}
+    language = "en" if data.get("language") == "en" else "ru"
+    errors = {
+        "rate": "Too many requests. Try again later." if language == "en" else "Лимит запросов. Повторите позже.",
+        "unavailable": "The AI assistant is not configured on the server yet." if language == "en" else "AI помощник пока не настроен на сервере.",
+        "input": "Enter a question of up to 1,500 characters." if language == "en" else "Введите вопрос до 1500 символов.",
+        "upstream": "Service temporarily unavailable." if language == "en" else "Сервис временно недоступен.",
+    }
     if rate_limited("assistant", 15, 900):
-        return jsonify(error="Лимит запросов. Повторите позже."), 429
+        return jsonify(error=errors["rate"]), 429
     api_key = os.environ.get("LORD_GROQ_API_KEY")
     if not api_key:
-        return jsonify(error="AI помощник пока не настроен на сервере."), 503
-    data = request.get_json(silent=True) or {}
+        return jsonify(error=errors["unavailable"]), 503
     prompt = str(data.get("message") or "").strip()
     if not prompt or len(prompt) > 1500:
-        return jsonify(error="Введите вопрос до 1500 символов."), 400
+        return jsonify(error=errors["input"]), 400
+    system_prompt = (
+        "You are a cybersecurity education assistant. Reply clearly and concisely in English. "
+        "Never claim to have audited a system or invent facts about the company."
+        if language == "en" else
+        "Ты образовательный помощник по кибербезопасности. Отвечай по-русски ясно и кратко. "
+        "Не утверждай, что был проведён аудит, и не выдумывай факты о компании."
+    )
     payload = json.dumps({
         "model": os.environ.get("LORD_GROQ_MODEL", "llama-3.3-70b-versatile"),
         "messages": [
-            {"role": "system", "content": "Ты образовательный помощник по кибербезопасности. Отвечай по-русски ясно и кратко. Не утверждай, что был проведён аудит, и не выдумывай факты о компании."},
+            {"role": "system", "content": system_prompt},
             {"role": "user", "content": prompt},
         ],
         "temperature": 0.3,
@@ -250,7 +264,7 @@ def assistant():
         answer = result["choices"][0]["message"]["content"]
         return jsonify(answer=answer)
     except (urlerror.URLError, KeyError, ValueError, TimeoutError):
-        return jsonify(error="Сервис временно недоступен."), 502
+        return jsonify(error=errors["upstream"]), 502
 
 
 @app.get("/api/assistant/status")

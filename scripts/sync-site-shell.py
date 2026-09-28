@@ -11,7 +11,7 @@ FRONT = ROOT / "front"
 HOME = FRONT / "homepage"
 PAGES = [*HOME.rglob("*.html"), FRONT / "templates/calculator.html", FRONT / "shift/index.html"]
 
-MARK = '''<span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 44 44" fill="none"><path d="M22 2.5 39 12v20L22 41.5 5 32V12L22 2.5Z" stroke="currentColor" stroke-width="1.7"/><path d="M14 12v19h16" stroke="currentColor" stroke-width="3.8" stroke-linecap="square"/><circle cx="30" cy="12" r="2.8" fill="currentColor"/></svg></span>'''
+MARK = '''<span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 44 44" fill="none"><path d="M22 2.5 39 12v20L22 41.5 5 32V12L22 2.5Z" stroke="currentColor" stroke-width="1.7"/><path d="M14 12v19h16" stroke="currentColor" stroke-width="3.8" stroke-linecap="square"/></svg></span>'''
 
 TOOLS = [
     ("Оценка киберриска", "Сценарий, вероятность и влияние", "/homepage/risk.html", "LIKELIHOOD × IMPACT / ПРИОРИТЕТЫ", "RISK"),
@@ -49,8 +49,9 @@ def header(page: Path) -> str:
         '<button class="menu-toggle" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="main-nav"><span></span><span></span><span></span></button>',
         '<nav id="main-nav" class="main-nav" aria-label="Основная навигация">',
         *(navlink(label, href) for label, href in links[:3]),
-        f'<div class="nav-tools"><button class="nav-tools-trigger{tool_active}" type="button" aria-expanded="false" aria-controls="tools-menu">Инструменты <span aria-hidden="true">⌄</span></button><div class="tools-dropdown" id="tools-menu" aria-label="Список инструментов">{dropdown}</div></div>',
+        f'<div class="nav-tools"><button class="nav-tools-trigger{tool_active}" type="button" aria-expanded="false" aria-controls="tools-menu">Инструменты <span class="nav-tools-indicator" aria-hidden="true"></span></button><div class="tools-dropdown" id="tools-menu" aria-label="Список инструментов">{dropdown}</div></div>',
         navlink(*links[3]),
+        '<div class="lang-switch" role="group" aria-label="Language / Язык"><button type="button" data-lang="en" aria-label="English">EN</button><button type="button" data-lang="ru" aria-label="Русский">RU</button></div>',
         '</nav>',
         f'<a class="header-cta{cta_active}" href="/homepage/risk.html">Оценить риск <span class="cta-arrow" aria-hidden="true">↗</span></a>',
         '</header>',
@@ -100,5 +101,8 @@ for page in PAGES:
             updated = updated.replace(site_script, tool_script + site_script, 1)
         else:
             updated = updated.replace('</body>', tool_script + site_script + '</body>', 1)
+    i18n_script = f'<script src="{css_base}i18n.js" defer></script>'
+    if 'i18n.js' not in updated:
+        updated = updated.replace(f'<script src="{css_base}tools-catalog.js" defer></script>', i18n_script + f'<script src="{css_base}tools-catalog.js" defer></script>', 1)
     page.write_text(updated, encoding="utf-8")
     print(page.relative_to(ROOT).as_posix())

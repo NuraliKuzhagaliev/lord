@@ -1,5 +1,13 @@
 body{font-size:17px}
-.section-kicker,.eyebrow,.lab-kicker,.shift-kicker{font-size:12px;letter-spacing:.12em}
+.section-kicker,.eyebrow,.lab-kicker,.shift-kicker{font-size:14px;letter-spacing:.1em}
+.section-intro{padding-top:88px;padding-bottom:90px;grid-template-columns:minmax(280px,.8fr) minmax(0,1.7fr);gap:clamp(36px,5vw,100px);align-items:center}
+.approach-aside{align-self:stretch;display:flex;flex-direction:column;justify-content:space-between;min-height:312px}.approach-visual{position:relative;width:min(100%,330px);height:238px;margin:15px 0 0;border:1px solid #2b5145;background:radial-gradient(circle at 50% 50%,rgba(101,219,161,.12),transparent 44%),linear-gradient(rgba(116,228,223,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(116,228,223,.04) 1px,transparent 1px);background-size:auto,24px 24px,24px 24px;overflow:hidden;clip-path:polygon(0 0,91% 0,100% 13%,100% 100%,9% 100%,0 87%)}
+.approach-visual::before,.approach-visual::after{content:"";position:absolute;inset:34px 78px;border:1px solid rgba(168,240,99,.22);border-radius:50%;animation:approach-pulse 5s ease-in-out infinite}.approach-visual::after{inset:65px 109px;animation-delay:1.8s}
+.approach-lines span{position:absolute;top:50%;left:50%;width:160px;height:1px;background:linear-gradient(90deg,transparent,#79d6ad,transparent);transform-origin:left center;opacity:.65}.approach-lines span:nth-child(1){transform:rotate(205deg)}.approach-lines span:nth-child(2){transform:rotate(325deg)}.approach-lines span:nth-child(3){transform:rotate(90deg)}
+.approach-node{position:absolute;z-index:2;display:flex;align-items:center;gap:5px;padding:6px 7px;border:1px solid #365b4b;background:#11231e;color:#aed5ba;font:700 9px/1 var(--mono);letter-spacing:.04em;box-shadow:0 0 16px rgba(168,240,99,.09);animation:float 5s ease-in-out infinite}.approach-node b{color:var(--accent)}.node-asset{top:38px;left:14px}.node-threat{top:68px;right:12px;animation-delay:1.4s}.node-control{bottom:25px;left:38px;animation-delay:2.8s}
+.approach-center{position:absolute;z-index:3;left:50%;top:50%;width:112px;height:112px;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid #7bdaab;border-radius:50%;background:#0d2220;box-shadow:0 0 24px rgba(116,228,223,.22),inset 0 0 18px rgba(168,240,99,.08);color:var(--accent)}.approach-center span,.approach-center small{font:700 8px/1.4 var(--mono);letter-spacing:.08em}.approach-center strong{font:700 31px/1.1 var(--display);letter-spacing:-.07em;color:#effaf1}.approach-note{display:flex;align-items:center;gap:9px;color:#7fb89c;font:700 10px/1.2 var(--mono);letter-spacing:.08em}.approach-note .signal{width:6px;height:6px}
+@keyframes approach-pulse{50%{opacity:.35;transform:scale(1.08)}}
+.site-shell .card-no,.site-shell .framework-item>span,.site-shell .content-card .number{font-size:14px;letter-spacing:.05em}
 .site-shell .service-card p,.site-shell .framework-item p{font-size:15px;line-height:1.65}
 .site-shell .content-card p,.site-shell .content-card li{font-size:16px;line-height:1.65}
 .hero-proof{font-size:11px}.lab-intro p,.shift-lead{font-size:16px;line-height:1.7}.calc-options label,.examples span,.examples button{font-size:12px}.hist-label,.tab-btn{font-size:11px}
@@ -26,5 +34,6 @@ button.button{appearance:none}
 .reveal{opacity:1;transform:none;transition:none}
 .reveal.in-view{animation:reveal-rise .65s cubic-bezier(.2,.8,.2,1) both}
 @keyframes reveal-rise{from{opacity:.55;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:650px){.site-shell .tool-row{min-height:100px;gap:12px;padding:21px 4px}.site-shell .tool-row:hover{padding-left:10px}.site-shell .tool-index{width:35px;font-size:12px}.site-shell .tool-name{font-size:22px}.site-shell .tool-name small{font-size:10px}.risk-form-actions{flex-direction:column}.risk-form-actions .button{width:100%}}
+@media(max-width:850px){.section-intro{grid-template-columns:1fr;gap:24px}.approach-aside{min-height:0}.approach-visual{height:210px;margin:16px 0}.approach-note{margin-bottom:12px}}
+@media(max-width:650px){.section-intro{padding-top:70px;padding-bottom:70px}.site-shell .tool-row{min-height:100px;gap:12px;padding:21px 4px}.site-shell .tool-row:hover{padding-left:10px}.site-shell .tool-index{width:35px;font-size:12px}.site-shell .tool-name{font-size:22px}.site-shell .tool-name small{font-size:10px}.risk-form-actions{flex-direction:column}.risk-form-actions .button{width:100%}}
 @media(prefers-reduced-motion:reduce){.reveal.in-view{animation:none}}

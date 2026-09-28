@@ -57,7 +57,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'same-origin',
-        body: JSON.stringify({ message })
+        body: JSON.stringify({ message, language: window.LORD_LANG === 'en' ? 'en' : 'ru' })
       });
       const result = await response.json();
       reply.textContent = response.ok ? result.answer : (result.error || 'Не удалось получить ответ.');

@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
       profileName.textContent = data.username;
       document.getElementById('profile-role').textContent = data.role;
       document.getElementById('profile-id').textContent = '#UID-' + data.id;
-      document.getElementById('profile-date').textContent = new Date(data.created_at + 'Z').toLocaleDateString('ru-RU');
+      document.getElementById('profile-date').textContent = new Date(data.created_at + 'Z').toLocaleDateString(window.LORD_LANG === 'en' ? 'en-US' : 'ru-RU');
     }).catch(() => { location.href = 'auth.html'; });
     document.getElementById('logout-btn').addEventListener('click', async () => {
       try { await request('/logout', { method:'POST', headers:{'Content-Type':'application/json'}, body:'{}' }); }

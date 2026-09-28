@@ -2,6 +2,7 @@
   const menu = document.querySelector('.menu-toggle');
   const nav = document.querySelector('.main-nav');
   const toolCatalog = Array.isArray(window.LORD_TOOLS) ? window.LORD_TOOLS : [];
+  const toolText = (tool, field) => window.LORD_LANG === 'en' ? (tool[field + 'En'] || tool[field]) : tool[field];
   const currentPath = location.pathname === '/' ? '/homepage/home.html' : location.pathname;
 
   function makeToolLink(tool) {
@@ -12,9 +13,9 @@
       link.setAttribute('aria-current', 'page');
     }
     const text = document.createElement('span');
-    text.textContent = tool.name;
+    text.textContent = toolText(tool, 'name');
     const detail = document.createElement('small');
-    detail.textContent = tool.subtitle;
+    detail.textContent = toolText(tool, 'subtitle');
     text.append(detail);
     const arrow = document.createElement('span');
     arrow.className = 'tool-link-arrow';
@@ -57,9 +58,9 @@
       number.textContent = String(index + 1).padStart(2, '0');
       const name = document.createElement('span');
       name.className = 'tool-name';
-      name.textContent = tool.name;
+      name.textContent = toolText(tool, 'name');
       const meta = document.createElement('small');
-      meta.textContent = tool.meta;
+      meta.textContent = toolText(tool, 'meta');
       name.append(meta);
       const tag = document.createElement('span');
       tag.className = 'tool-tag';
@@ -160,7 +161,7 @@
     ['Главная', 'Обзор платформы', '/homepage/home.html'],
     ['Решения', 'Оценка, защита, обнаружение и реагирование', '/homepage/services.html'],
     ['База знаний', 'Практики NIST, CISA и OWASP', '/homepage/learn.html'],
-    ...toolCatalog.map(tool => [tool.name, tool.subtitle, tool.href]),
+    ...toolCatalog.map(tool => [toolText(tool, 'name'), toolText(tool, 'subtitle'), tool.href]),
     ['О проекте', 'Миссия и принципы', '/homepage/about/about.html'],
     ['Безопасность и данные', 'Как устроена обработка данных', '/homepage/trust.html'],
     ['Личный кабинет', 'Демонстрационный профиль', '/homepage/auth/auth.html']
