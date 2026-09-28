@@ -10,8 +10,8 @@
     fetch('/api/assistant/status', { credentials: 'same-origin' })
       .then(response => response.ok ? response.json() : null)
       .then(result => {
-        status.textContent = result?.available ? 'ИИ ПОДКЛЮЧЁН' : 'ИИ ПОКА НЕ ПОДКЛЮЧЁН';
-        status.classList.toggle('is-unavailable', !result?.available);
+        status.textContent = result?.configured ? 'КЛЮЧ ЗАДАН • НЕ ПРОВЕРЕН' : 'ИИ ПОКА НЕ ПОДКЛЮЧЁН';
+        status.classList.toggle('is-unavailable', !result?.configured);
       })
       .catch(() => { status.textContent = 'СТАТУС НЕИЗВЕСТЕН'; });
   }
