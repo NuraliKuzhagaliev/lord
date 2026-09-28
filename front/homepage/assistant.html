@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#080d12">
+  <meta name="description" content="Чат с образовательным ИИ помощником LORD Security.">
+  <title>Чат с ИИ | LORD Security</title>
+  <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="assistant.css">
+<link rel="stylesheet" href="navigation.css"><link rel="stylesheet" href="site-polish.css"></head>
+<body>
+<a class="skip-link" href="#main">Перейти к чату</a>
+<div class="site-shell">
+  <header class="site-header"><a class="brand" href="/homepage/home.html" aria-label="LORD Security — главная"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 44 44" fill="none"><path d="M22 2.5 39 12v20L22 41.5 5 32V12L22 2.5Z" stroke="currentColor" stroke-width="1.7"/><path d="M14 12v19h16" stroke="currentColor" stroke-width="3.8" stroke-linecap="square"/><circle cx="30" cy="12" r="2.8" fill="currentColor"/></svg></span><span class="brand-wordmark">LORD<span class="brand-sub">SECURITY</span></span></a><button class="menu-toggle" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="main-nav"><span></span><span></span><span></span></button><nav id="main-nav" class="main-nav" aria-label="Основная навигация"><a href="/homepage/home.html">Главная</a><a href="/homepage/services.html">Решения</a><a href="/homepage/learn.html">База знаний</a><div class="nav-tools"><button class="nav-tools-trigger is-active" type="button" aria-expanded="false" aria-controls="tools-menu">Инструменты <span aria-hidden="true">⌄</span></button><div class="tools-dropdown" id="tools-menu" aria-label="Список инструментов"><a href="/homepage/risk.html"><span>Оценка киберриска<small>Сценарий, вероятность и влияние</small></span><span class="tool-link-arrow" aria-hidden="true">↗</span></a><a href="/templates/calculator.html"><span>Pifagor Lab<small>Калькулятор, графики и переменные</small></span><span class="tool-link-arrow" aria-hidden="true">↗</span></a><a href="/shift/index.html"><span>Cipher Terminal<small>Учебная криптография</small></span><span class="tool-link-arrow" aria-hidden="true">↗</span></a><a href="/homepage/assistant.html" class="is-active" aria-current="page"><span>Чат с ИИ<small>Вопросы по кибербезопасности</small></span><span class="tool-link-arrow" aria-hidden="true">↗</span></a></div></div><a href="/homepage/about/about.html">О проекте</a></nav><a class="header-cta" href="/homepage/risk.html">Оценить риск <span class="cta-arrow" aria-hidden="true">↗</span></a></header>
+  <main id="main">
+    <section class="page-hero section-pad assistant-hero">
+      <div class="section-kicker">ИНСТРУМЕНТ 04 — AI ASSISTANT</div>
+      <h1>Разберите вопрос <em>по существу.</em></h1>
+      <p>Задайте вопрос по кибербезопасности и получите краткое объяснение. Помощник не проводит аудит и может ошибаться — проверяйте важные решения по первоисточникам.</p>
+    </section>
+    <section class="assistant-layout section-pad" aria-label="Чат с ИИ">
+      <div class="assistant-panel">
+        <div class="assistant-top"><div><span class="assistant-pulse" aria-hidden="true"></span><strong>LORD / ASSISTANT</strong></div><span id="assistant-status">ПРОВЕРКА ДОСТУПНОСТИ</span></div>
+        <div id="assistant-messages" class="assistant-messages" aria-live="polite" aria-relevant="additions text">
+          <div class="assistant-message assistant-message-system"><span class="message-label">LORD SECURITY</span><p>Привет. Помогу разобраться в терминах, мерах защиты и сценариях риска. Сформулируйте вопрос — например, о MFA, резервном копировании или реагировании на инцидент.</p></div>
+        </div>
+        <div class="assistant-suggestions" aria-label="Примеры вопросов"><button type="button" data-prompt="Как начать оценку киберриска для небольшой команды?">Как начать оценку риска?</button><button type="button" data-prompt="Объясни разницу между MFA и двухфакторной аутентификацией.">Что даёт MFA?</button><button type="button" data-prompt="Какие первые действия при подозрении на утечку данных?">Подозрение на утечку</button></div>
+        <form id="assistant-form" class="assistant-form"><label for="assistant-input">Ваш вопрос</label><div class="assistant-compose"><textarea id="assistant-input" name="message" rows="2" maxlength="1500" placeholder="Напишите вопрос по кибербезопасности…" required></textarea><button class="button primary" type="submit" id="assistant-send">Отправить <span aria-hidden="true">↗</span></button></div><p>Не отправляйте пароли, ключи, персональные данные и другую конфиденциальную информацию.</p></form>
+      </div>
+      <aside class="assistant-side"><span class="section-kicker">ГРАНИЦЫ ПОМОЩНИКА</span><h2>Ответ — начало проверки.</h2><p>ИИ может помочь с объяснением, но не видит вашу инфраструктуру и не заменяет специалиста.</p><a href="learn.html">Открыть базу знаний ↗</a><a href="trust.html">Как обрабатываются данные ↗</a></aside>
+    </section>
+  </main>
+  <footer class="site-footer"><div><a class="brand" href="home.html" aria-label="LORD Security — главная"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 44 44" fill="none"><path d="M22 2.5 39 12v20L22 41.5 5 32V12L22 2.5Z" stroke="currentColor" stroke-width="1.7"/><path d="M14 12v19h16" stroke="currentColor" stroke-width="3.8" stroke-linecap="square"/><circle cx="30" cy="12" r="2.8" fill="currentColor"/></svg></span><span class="brand-wordmark">LORD<span class="brand-sub">SECURITY</span></span></a><p>Практика, инженерия, прозрачность.</p></div><div class="footer-links"><a href="services.html">Решения</a><a href="learn.html">База знаний</a><a href="risk.html">Оценка риска</a><a href="trust.html">Безопасность и данные</a></div><div class="footer-bottom"><span>© 2026 LORD Security</span><span>Проверяйте критичные решения независимо.</span></div></footer>
+</div>
+<script src="assistant.js" defer></script>
+<script src="tools-catalog.js" defer></script><script src="site.js" defer></script></body>
+</html>

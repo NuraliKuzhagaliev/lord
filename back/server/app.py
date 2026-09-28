@@ -253,6 +253,11 @@ def assistant():
         return jsonify(error="Сервис временно недоступен."), 502
 
 
+@app.get("/api/assistant/status")
+def assistant_status():
+    return jsonify(available=bool(os.environ.get("LORD_GROQ_API_KEY")))
+
+
 init_db()
 
 if __name__ == "__main__":

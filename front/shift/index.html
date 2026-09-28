@@ -12,17 +12,17 @@
     <!-- Подключаем стили самого шифратора -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="enhancements.css">
-</head>
+<link rel="stylesheet" href="../homepage/navigation.css"><link rel="stylesheet" href="../homepage/site-polish.css"></head>
 <body>
 
 <!-- === ВСТАВЛЕННОЕ МЕНЮ (NAVBAR) === -->
-<nav class="navbar" aria-label="Навигация"><a class="shift-brand" href="../homepage/home.html">L<span>.</span> <small>LORD SECURITY</small></a><div class="shift-nav"><a href="../homepage/home.html">Главная</a><a href="../homepage/risk.html">Оценка риска</a><a href="../templates/calculator.html">Pifagor Lab</a><a href="../homepage/learn.html">База знаний</a></div></nav>
+<header class="site-header"><a class="brand" href="/homepage/home.html" aria-label="LORD Security — главная"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 44 44" fill="none"><path d="M22 2.5 39 12v20L22 41.5 5 32V12L22 2.5Z" stroke="currentColor" stroke-width="1.7"/><path d="M14 12v19h16" stroke="currentColor" stroke-width="3.8" stroke-linecap="square"/><circle cx="30" cy="12" r="2.8" fill="currentColor"/></svg></span><span class="brand-wordmark">LORD<span class="brand-sub">SECURITY</span></span></a><button class="menu-toggle" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="main-nav"><span></span><span></span><span></span></button><nav id="main-nav" class="main-nav" aria-label="Основная навигация"><a href="/homepage/home.html">Главная</a><a href="/homepage/services.html">Решения</a><a href="/homepage/learn.html">База знаний</a><div class="nav-tools"><button class="nav-tools-trigger is-active" type="button" aria-expanded="false" aria-controls="tools-menu">Инструменты <span aria-hidden="true">⌄</span></button><div class="tools-dropdown" id="tools-menu" aria-label="Список инструментов"><a href="/homepage/risk.html"><span>Оценка киберриска<small>Сценарий, вероятность и влияние</small></span><span class="tool-link-arrow" aria-hidden="true">↗</span></a><a href="/templates/calculator.html"><span>Pifagor Lab<small>Калькулятор, графики и переменные</small></span><span class="tool-link-arrow" aria-hidden="true">↗</span></a><a href="/shift/index.html" class="is-active" aria-current="page"><span>Cipher Terminal<small>Учебная криптография</small></span><span class="tool-link-arrow" aria-hidden="true">↗</span></a><a href="/homepage/assistant.html"><span>Чат с ИИ<small>Вопросы по кибербезопасности</small></span><span class="tool-link-arrow" aria-hidden="true">↗</span></a></div></div><a href="/homepage/about/about.html">О проекте</a></nav><a class="header-cta" href="/homepage/risk.html">Оценить риск <span class="cta-arrow" aria-hidden="true">↗</span></a></header>
 <!-- ================================= -->
 
 <!-- Добавляем отступ сверху, чтобы меню не закрывало контент -->
 <div class="container">
     <header>
-        <div class="shift-kicker">/ ИНСТРУМЕНТ 03 — CRYPTOGRAPHY</div><h1>Cipher Terminal <span class="version">v3.0</span></h1><p class="shift-lead">Изучайте принципы шифрования на практике. Caesar, Vigenère и XOR — только учебные примеры. Для современных сценариев используйте AES-GCM и RSA-OAEP.</p>
+        <div class="shift-kicker">ИНСТРУМЕНТ 03 — CRYPTOGRAPHY</div><h1>Cipher Terminal <span class="version">v3.0</span></h1><p class="shift-lead">Изучайте принципы шифрования на практике. Caesar, Vigenère и XOR — только учебные примеры. Для современных сценариев используйте AES-GCM и RSA-OAEP.</p>
     </header>
 
     <main>
@@ -109,6 +109,6 @@
 
 <script src="script.js"></script>
 <script src="../homepage/chatbot.js"></script>
-</body>
+<script src="../homepage/tools-catalog.js" defer></script><script src="../homepage/site.js" defer></script></body>
 </html>
 

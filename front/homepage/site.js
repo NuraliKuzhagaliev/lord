@@ -1,6 +1,85 @@
 (() => {
   const menu = document.querySelector('.menu-toggle');
   const nav = document.querySelector('.main-nav');
+  const toolCatalog = Array.isArray(window.LORD_TOOLS) ? window.LORD_TOOLS : [];
+  const currentPath = location.pathname === '/' ? '/homepage/home.html' : location.pathname;
+
+  function makeToolLink(tool) {
+    const link = document.createElement('a');
+    link.href = tool.href;
+    if (currentPath === tool.href) {
+      link.classList.add('is-active');
+      link.setAttribute('aria-current', 'page');
+    }
+    const text = document.createElement('span');
+    text.textContent = tool.name;
+    const detail = document.createElement('small');
+    detail.textContent = tool.subtitle;
+    text.append(detail);
+    const arrow = document.createElement('span');
+    arrow.className = 'tool-link-arrow';
+    arrow.setAttribute('aria-hidden', 'true');
+    arrow.textContent = '↗';
+    link.append(text, arrow);
+    return link;
+  }
+
+  const toolsMenu = document.querySelector('.nav-tools');
+  const toolsTrigger = document.querySelector('.nav-tools-trigger');
+  const toolsDropdown = document.querySelector('.tools-dropdown');
+  if (toolCatalog.length && toolsDropdown) toolsDropdown.replaceChildren(...toolCatalog.map(makeToolLink));
+  if (toolsMenu && toolsTrigger) {
+    if (toolCatalog.some(tool => tool.href === currentPath)) toolsTrigger.classList.add('is-active');
+    const closeTools = () => {
+      toolsMenu.classList.remove('is-open');
+      toolsTrigger.setAttribute('aria-expanded', 'false');
+    };
+    toolsTrigger.addEventListener('click', event => {
+      event.stopPropagation();
+      const open = toolsMenu.classList.toggle('is-open');
+      toolsTrigger.setAttribute('aria-expanded', String(open));
+    });
+    document.addEventListener('click', event => { if (!toolsMenu.contains(event.target)) closeTools(); });
+    document.addEventListener('keydown', event => { if (event.key === 'Escape') closeTools(); });
+    toolsMenu.addEventListener('mouseleave', () => {
+      if (!toolsMenu.contains(document.activeElement)) closeTools();
+    });
+  }
+
+  const toolList = document.querySelector('.tool-list');
+  if (toolCatalog.length && toolList) {
+    const rows = toolCatalog.map((tool, index) => {
+      const link = document.createElement('a');
+      link.href = tool.href;
+      link.className = 'tool-row reveal';
+      const number = document.createElement('span');
+      number.className = 'tool-index';
+      number.textContent = String(index + 1).padStart(2, '0');
+      const name = document.createElement('span');
+      name.className = 'tool-name';
+      name.textContent = tool.name;
+      const meta = document.createElement('small');
+      meta.textContent = tool.meta;
+      name.append(meta);
+      const tag = document.createElement('span');
+      tag.className = 'tool-tag';
+      tag.textContent = tool.tag;
+      const arrow = document.createElement('span');
+      arrow.className = 'tool-arr';
+      arrow.setAttribute('aria-hidden', 'true');
+      arrow.textContent = '↗';
+      link.append(number, name, tag, arrow);
+      return link;
+    });
+    toolList.replaceChildren(...rows);
+  }
+
+  document.querySelectorAll('.main-nav > a, .header-cta').forEach(link => {
+    if (new URL(link.href).pathname === currentPath) {
+      link.classList.add('is-active');
+      link.setAttribute('aria-current', 'page');
+    }
+  });
   if (menu && nav) {
     menu.addEventListener('click', () => {
       const open = nav.classList.toggle('open');
@@ -78,17 +157,14 @@
   updateProgress();
 
   const destinations = [
-    ['Главная', 'Обзор платформы', 'home.html'],
-    ['Решения', 'Оценка, защита, обнаружение и реагирование', 'services.html'],
-    ['База знаний', 'Практики NIST, CISA и OWASP', 'learn.html'],
-    ['Оценка киберриска', 'Интерактивная матрица', 'risk.html'],
-    ['Pifagor Lab', 'Формулы и графики', '../templates/calculator.html'],
-    ['Cipher Terminal', 'Учебная криптография', '../shift/index.html'],
-    ['О проекте', 'Миссия и принципы', 'about/about.html'],
-    ['Безопасность и данные', 'Как устроена обработка данных', 'trust.html'],
-    ['Личный кабинет', 'Демонстрационный профиль', 'auth/auth.html']
+    ['Главная', 'Обзор платформы', '/homepage/home.html'],
+    ['Решения', 'Оценка, защита, обнаружение и реагирование', '/homepage/services.html'],
+    ['База знаний', 'Практики NIST, CISA и OWASP', '/homepage/learn.html'],
+    ...toolCatalog.map(tool => [tool.name, tool.subtitle, tool.href]),
+    ['О проекте', 'Миссия и принципы', '/homepage/about/about.html'],
+    ['Безопасность и данные', 'Как устроена обработка данных', '/homepage/trust.html'],
+    ['Личный кабинет', 'Демонстрационный профиль', '/homepage/auth/auth.html']
   ];
-  const base = location.pathname.includes('/about/') ? '../' : '';
   const trigger = document.createElement('button');
   trigger.type = 'button';
   trigger.className = 'palette-trigger';
@@ -102,7 +178,7 @@
   const footerLinks = document.querySelector('.footer-links');
   if (footerLinks && !footerLinks.querySelector('a[href$="trust.html"]')) {
     const trust = document.createElement('a');
-    trust.href = base + 'trust.html';
+    trust.href = '/homepage/trust.html';
     trust.textContent = 'Безопасность и данные';
     footerLinks.appendChild(trust);
   }
@@ -122,7 +198,7 @@
     }
     for (const [label, subtitle, url] of matches) {
       const link = document.createElement('a');
-      link.href = base + url;
+      link.href = url;
       const name = document.createElement('span');
       name.textContent = label;
       const detail = document.createElement('small');

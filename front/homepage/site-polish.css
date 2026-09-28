@@ -1,0 +1,30 @@
+body{font-size:17px}
+.section-kicker,.eyebrow,.lab-kicker,.shift-kicker{font-size:12px;letter-spacing:.12em}
+.site-shell .service-card p,.site-shell .framework-item p{font-size:15px;line-height:1.65}
+.site-shell .content-card p,.site-shell .content-card li{font-size:16px;line-height:1.65}
+.hero-proof{font-size:11px}.lab-intro p,.shift-lead{font-size:16px;line-height:1.7}.calc-options label,.examples span,.examples button{font-size:12px}.hist-label,.tab-btn{font-size:11px}
+.site-shell .tool-row{min-height:132px;padding:28px 14px;gap:28px;transition:background .25s,padding .25s,border-color .25s}
+.site-shell .tool-row:hover,.site-shell .tool-row:focus-visible{padding-left:27px;background:linear-gradient(90deg,rgba(168,240,99,.13),rgba(168,240,99,.025));border-bottom-color:#749b65}
+.site-shell .tool-index{font-size:14px;width:65px}
+.site-shell .tool-name{font-size:30px}
+.site-shell .tool-name small{font-size:11px;line-height:1.5;letter-spacing:.09em;margin-top:6px}
+.site-shell .tool-tag{font-size:11px;border-radius:5px;padding:7px 11px}
+.site-shell .tool-arr{transition:transform .25s}
+.site-shell .tool-row:hover .tool-arr{transform:translate(4px,-4px)}
+.button{border-radius:10px;font:700 14px 'Manrope',var(--display),sans-serif;letter-spacing:0}
+button.button{appearance:none}
+.button.ghost{background:#182720;border:1px solid #688678;color:#edf7ee}
+.button.ghost:hover,.button.ghost:focus-visible{background:#223b2c;border-color:#b5e788;color:#fff}
+.button.primary{border:1px solid #a8f063;background:#aff078;color:#11210c}
+.button.primary:hover,.button.primary:focus-visible{background:#c6f89c;color:#091708}
+.risk-form-actions{gap:14px;align-items:stretch}
+.risk-form-actions .button{min-height:58px;padding:0 21px;display:inline-flex;align-items:center;justify-content:center;gap:12px;box-shadow:none}
+.risk-form-actions .button.primary{box-shadow:0 9px 24px rgba(168,240,99,.13)}
+.risk-form-actions .button.primary:hover{box-shadow:0 0 28px rgba(168,240,99,.28)}
+.risk-form-actions .button-icon{font:800 21px/1 'Manrope',sans-serif}
+.risk-step>span{font-size:12px}.risk-step small{font-size:13px}.range-row label{font-size:15px}
+.reveal{opacity:1;transform:none;transition:none}
+.reveal.in-view{animation:reveal-rise .65s cubic-bezier(.2,.8,.2,1) both}
+@keyframes reveal-rise{from{opacity:.55;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:650px){.site-shell .tool-row{min-height:100px;gap:12px;padding:21px 4px}.site-shell .tool-row:hover{padding-left:10px}.site-shell .tool-index{width:35px;font-size:12px}.site-shell .tool-name{font-size:22px}.site-shell .tool-name small{font-size:10px}.risk-form-actions{flex-direction:column}.risk-form-actions .button{width:100%}}
+@media(prefers-reduced-motion:reduce){.reveal.in-view{animation:none}}

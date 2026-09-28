@@ -15,7 +15,10 @@ for (const page of pages) {
   const markup = fs.readFileSync(page, 'utf8');
   for (const [, url] of markup.matchAll(/(?:href|src)="([^"]+)"/g)) {
     if (/^(?:https?:|#|data:|mailto:)/i.test(url)) continue;
-    const target = path.resolve(path.dirname(page), url.split(/[?#]/)[0]);
+    const localPath = url.split(/[?#]/)[0];
+    const target = localPath.startsWith('/')
+      ? path.resolve(root, '.' + localPath)
+      : path.resolve(path.dirname(page), localPath);
     if (!fs.existsSync(target)) missing.push(path.relative(root, page) + ' → ' + url);
   }
 }
