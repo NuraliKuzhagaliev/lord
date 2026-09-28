@@ -169,20 +169,128 @@
   const trigger = document.createElement('button');
   trigger.type = 'button';
   trigger.className = 'palette-trigger';
-  trigger.textContent = '⌕  БЫСТРЫЙ ПЕРЕХОД   Ctrl K';
-  trigger.setAttribute('aria-label', 'Открыть быстрый переход');
+  trigger.setAttribute('aria-label', window.LORD_LANG === 'en' ? 'Open quick navigation' : 'Открыть быстрый переход');
+  const triggerIcon = document.createElement('span');
+  triggerIcon.className = 'palette-trigger-icon';
+  triggerIcon.setAttribute('aria-hidden', 'true');
+  triggerIcon.textContent = '⌕';
+  const triggerLabel = document.createElement('span');
+  triggerLabel.textContent = window.LORD_LANG === 'en' ? 'Quick navigation' : 'Быстрый переход';
+  const triggerShortcut = document.createElement('kbd');
+  triggerShortcut.textContent = 'Ctrl K';
+  trigger.append(triggerIcon, triggerLabel, triggerShortcut);
   const backdrop = document.createElement('div');
   backdrop.className = 'palette-backdrop';
   backdrop.hidden = true;
   backdrop.innerHTML = '<div class="palette" role="dialog" aria-modal="true" aria-label="Быстрый переход"><div class="palette-header"><span>⌕</span><input type="search" aria-label="Найти раздел" placeholder="Найти раздел или инструмент…"><button class="palette-close" type="button" aria-label="Закрыть">ESC</button></div><div class="palette-results"></div><div class="palette-hint">↑ ↓ выбрать • Enter открыть • Esc закрыть</div></div>';
   document.body.append(trigger, backdrop);
-  const footerLinks = document.querySelector('.footer-links');
-  if (footerLinks && !footerLinks.querySelector('a[href$="trust.html"]')) {
-    const trust = document.createElement('a');
-    trust.href = '/homepage/trust.html';
-    trust.textContent = 'Безопасность и данные';
-    footerLinks.appendChild(trust);
+  function buildFooter() {
+    const english = window.LORD_LANG === 'en';
+    const label = (ru, en) => english ? en : ru;
+    const footer = document.querySelector('.site-footer') || document.createElement('footer');
+    footer.className = 'site-footer';
+    footer.replaceChildren();
+
+    const atmosphere = document.createElement('div');
+    atmosphere.className = 'footer-atmosphere';
+    atmosphere.setAttribute('aria-hidden', 'true');
+    const grid = document.createElement('span');
+    const orbit = document.createElement('span');
+    const core = document.createElement('span');
+    atmosphere.append(grid, orbit, core);
+
+    const top = document.createElement('div');
+    top.className = 'footer-topline';
+    const eyebrow = document.createElement('span');
+    eyebrow.textContent = 'LORD / SECURITY PLATFORM';
+    const descriptor = document.createElement('span');
+    descriptor.textContent = label('Ясность в каждом решении', 'Clarity at every decision');
+    top.append(eyebrow, descriptor);
+
+    const main = document.createElement('div');
+    main.className = 'footer-main';
+    const identity = document.createElement('div');
+    identity.className = 'footer-identity';
+    const brand = document.querySelector('.site-header .brand')?.cloneNode(true);
+    if (brand) {
+      brand.href = '/homepage/home.html';
+      identity.append(brand);
+    }
+    const statement = document.createElement('p');
+    statement.className = 'footer-statement';
+    statement.textContent = label(
+      'Понимайте риск. Проверяйте гипотезы. Принимайте решения с опорой на метод.',
+      'Understand risk. Test assumptions. Make decisions with a clear method.'
+    );
+    const action = document.createElement('a');
+    action.className = 'footer-action';
+    action.href = '/homepage/risk.html';
+    action.textContent = label('Начать оценку риска', 'Start a risk assessment');
+    const actionArrow = document.createElement('span');
+    actionArrow.setAttribute('aria-hidden', 'true');
+    actionArrow.textContent = '↗';
+    action.append(actionArrow);
+    identity.append(statement, action);
+
+    function link(name, href, external = false) {
+      const anchor = document.createElement('a');
+      anchor.href = href;
+      anchor.textContent = name;
+      if (external) {
+        anchor.target = '_blank';
+        anchor.rel = 'noopener noreferrer';
+        const arrow = document.createElement('span');
+        arrow.setAttribute('aria-hidden', 'true');
+        arrow.textContent = ' ↗';
+        anchor.append(arrow);
+      }
+      if (new URL(anchor.href).pathname === currentPath) anchor.setAttribute('aria-current', 'page');
+      return anchor;
+    }
+
+    function column(title, entries, className = '') {
+      const nav = document.createElement('nav');
+      nav.className = `footer-column ${className}`.trim();
+      nav.setAttribute('aria-label', title);
+      const heading = document.createElement('h2');
+      heading.textContent = title;
+      nav.append(heading);
+      entries.forEach(([name, href, external]) => nav.append(link(name, href, external)));
+      return nav;
+    }
+
+    const explore = column(label('Платформа', 'Platform'), [
+      [label('Главная', 'Home'), '/homepage/home.html'],
+      [label('Решения', 'Solutions'), '/homepage/services.html'],
+      [label('База знаний', 'Knowledge base'), '/homepage/learn.html'],
+      [label('О проекте', 'About'), '/homepage/about/about.html'],
+      [label('Безопасность и данные', 'Security & data'), '/homepage/trust.html']
+    ]);
+    const tools = column(label('Инструменты', 'Tools'), toolCatalog.map(tool => [toolText(tool, 'name'), tool.href]), 'footer-tools');
+    const sources = column(label('Источники и проект', 'Sources & project'), [
+      ['NIST CSF 2.0', 'https://www.nist.gov/cyberframework', true],
+      ['CISA Cybersecurity Goals', 'https://www.cisa.gov/cybersecurity-performance-goals', true],
+      ['OWASP Top 10', 'https://owasp.org/www-project-top-ten/', true],
+      [label('Код проекта на GitHub', 'Project on GitHub'), 'https://github.com/NuraliKuzhagaliev/lord', true]
+    ]);
+    main.append(identity, explore, tools, sources);
+
+    const bottom = document.createElement('div');
+    bottom.className = 'footer-bottom';
+    const copyright = document.createElement('span');
+    copyright.textContent = `© ${new Date().getFullYear()} LORD Security`;
+    const note = document.createElement('span');
+    note.textContent = label('Образовательная платформа. Критичные решения проверяйте независимо.', 'Educational platform. Verify critical decisions independently.');
+    const backToTop = document.createElement('button');
+    backToTop.className = 'footer-back-to-top';
+    backToTop.type = 'button';
+    backToTop.textContent = label('Наверх ↑', 'Back to top ↑');
+    backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: reduceMotion ? 'instant' : 'smooth' }));
+    bottom.append(copyright, note, backToTop);
+    footer.append(atmosphere, top, main, bottom);
+    if (!footer.isConnected) document.body.append(footer);
   }
+  buildFooter();
   const search = backdrop.querySelector('input');
   const results = backdrop.querySelector('.palette-results');
   let lastFocus;
