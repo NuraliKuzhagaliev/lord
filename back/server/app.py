@@ -262,7 +262,11 @@ def assistant():
         upstream = urlrequest.Request(
             "https://api.groq.com/openai/v1/chat/completions",
             data=payload,
-            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+                "User-Agent": "LORD-Security/1.0",
+            },
             method="POST",
         )
         try:
