@@ -1,0 +1,528 @@
+/* === GLOBAL CYBERPUNK THEME OVERRIDE === */
+body {
+    /* Добавляем сетку на фон для атмосферы */
+    background-image: 
+        linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
+    background-position: center;
+}
+
+/* Эффект старого монитора (scanlines) */
+body::after {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.3;
+}
+
+/* === ABOUT CONTAINER === */
+.about-container {
+    max-width: 1000px;
+    margin: 60px auto;
+    padding: 50px;
+    
+    /* Эффект "матового стекла" + неоновая рамка */
+    background: rgba(13, 17, 23, 0.85);
+    backdrop-filter: blur(5px);
+    border: 1px solid var(--accent);
+    box-shadow: 
+        0 0 20px rgba(0, 255, 65, 0.1),
+        inset 0 0 20px rgba(0, 255, 65, 0.05);
+        
+    /* Скошенные углы (Clip-path) - очень по-киберпанковски */
+    clip-path: polygon(
+        20px 0, 100% 0, 
+        100% calc(100% - 20px), calc(100% - 20px) 100%, 
+        0 100%, 0 20px
+    );
+    position: relative;
+}
+
+/* Декоративные уголки */
+.about-container::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    border: 1px solid transparent;
+    /* Уголки через градиенты (сложный трюк) - упростим до border */
+    pointer-events: none;
+}
+
+/* === HEADER === */
+.about-header {
+    text-align: center;
+    margin-bottom: 60px;
+    border-bottom: 2px solid #1f252e;
+    padding-bottom: 30px;
+    position: relative;
+}
+
+.about-header h1 {
+    color: #fff;
+    font-size: 3rem;
+    letter-spacing: 5px;
+    margin-bottom: 10px;
+    text-shadow: 
+        0 0 5px var(--accent),
+        0 0 10px var(--accent),
+        0 0 20px var(--accent);
+    animation: textFlicker 3s infinite alternate;
+}
+
+/* Мигающий курсор в конце заголовка */
+.about-header h1::after {
+    content: "_";
+    animation: blink 1s infinite;
+}
+
+.about-header p {
+    color: var(--accent);
+    font-family: 'Courier New', monospace;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* === CONTENT GRID === */
+.about-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    margin-bottom: 60px;
+}
+
+.text-block h2 {
+    color: var(--accent);
+    font-size: 1.5rem;
+    border-left: 4px solid var(--accent);
+    padding-left: 20px;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, rgba(0,255,65,0.1) 0%, transparent 100%);
+    padding: 10px 20px;
+}
+
+.text-block p {
+    color: #aebbc7;
+    line-height: 1.7;
+    margin-bottom: 20px;
+    font-size: 1rem;
+    text-align: justify;
+}
+
+/* Список Values с кастомными чекбоксами */
+.text-block ul {
+    list-style: none;
+    padding: 0;
+}
+
+.text-block ul li {
+    margin-bottom: 15px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+}
+
+.text-block ul li b {
+    color: var(--accent);
+    margin-right: 8px;
+    text-shadow: 0 0 5px var(--accent);
+}
+
+/* === STATS CARDS (Holo-Cards) === */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    margin-top: 40px;
+}
+
+.stat-card {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid #333;
+    padding: 30px 20px;
+    text-align: center;
+    transition: 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Эффект сканера при наведении */
+.stat-card::after {
+    content: "";
+    position: absolute;
+    top: -100%; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to bottom, transparent, rgba(0, 255, 65, 0.2), transparent);
+    transition: 0.5s;
+}
+
+.stat-card:hover::after {
+    top: 100%;
+}
+
+.stat-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 255, 65, 0.15);
+}
+
+.stat-number {
+    display: block;
+    font-size: 2.8rem;
+    color: #fff;
+    font-weight: bold;
+    text-shadow: 2px 2px 0px #000, 0 0 15px var(--accent);
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 10px;
+    display: block;
+}
+
+/* === FOOTER NEON UPGRADE === */
+.cyber-footer {
+    background: #050505;
+    border-top: 2px solid var(--accent);
+    padding: 60px 0 30px 0;
+    position: relative;
+    overflow: hidden;
+    margin-top: 100px;
+    box-shadow: 0 -10px 40px rgba(0, 255, 65, 0.05);
+}
+
+/* Фоновая сетка для футера */
+.cyber-footer::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: 
+        linear-gradient(rgba(0, 255, 65, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 65, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+    padding: 0 30px;
+    position: relative;
+    z-index: 1;
+}
+
+.footer-col h3 {
+    color: #fff;
+    font-size: 1.1rem;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-bottom: 2px solid #1f252e;
+    padding-bottom: 10px;
+    display: inline-block; /* Подчеркивание только под текстом */
+}
+
+/* Первая колонка (Лого + Описание) */
+.footer-col:first-child h3 {
+    color: var(--accent);
+    text-shadow: 0 0 10px var(--accent);
+    border-color: var(--accent);
+}
+
+.footer-desc {
+    color: #8b949e;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+/* Ссылки в колонках */
+.footer-col ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-col ul li {
+    margin-bottom: 12px;
+}
+
+.footer-col ul li a {
+    color: #8b949e;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+/* Эффект при наведении на ссылку (стрелочка) */
+.footer-col ul li a::before {
+    content: ">";
+    color: var(--accent);
+    opacity: 0;
+    margin-right: -10px;
+    transition: 0.3s;
+    font-weight: bold;
+}
+
+.footer-col ul li a:hover {
+    color: #fff;
+    padding-left: 10px;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+.footer-col ul li a:hover::before {
+    opacity: 1;
+    margin-right: 8px;
+}
+
+/* Социальные иконки */
+.social-links {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.social-links a {
+    width: 40px; 
+    height: 40px;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    border: 1px solid #333;
+    color: #8b949e;
+    text-decoration: none;
+    transition: 0.3s;
+    background: #0d1117;
+}
+
+.social-links a:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+    transform: translateY(-3px);
+}
+
+/* Нижняя полоса копирайта */
+.footer-bottom {
+    text-align: center;
+    margin-top: 60px;
+    padding-top: 25px;
+    border-top: 1px solid #1f252e;
+    color: #484f58;
+    font-size: 0.8rem;
+    font-family: 'Courier New', monospace;
+    position: relative;
+    z-index: 1;
+}
+
+.footer-bottom p span {
+    color: var(--accent);
+}
+
+/* Адаптив */
+@media (max-width: 900px) {
+    .footer-content {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+@media (max-width: 500px) {
+    .footer-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    .footer-col h3 {
+        display: block;
+        border-bottom: none;
+        text-decoration: underline;
+        text-decoration-color: #333;
+    } 
+    .social-links {
+        justify-content: center;
+    }
+}
+
+
+/* === ANIMATIONS === */
+@keyframes textFlicker {
+    0% { opacity: 1; text-shadow: 0 0 10px var(--accent); }
+    5% { opacity: 0.8; text-shadow: none; }
+    10% { opacity: 1; text-shadow: 0 0 10px var(--accent); }
+    100% { opacity: 1; text-shadow: 0 0 20px var(--accent); }
+}
+
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+/* Адаптив для мобильных */
+@media (max-width: 800px) {
+    .about-content, .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    .about-header h1 { font-size: 2rem; }
+}
+
+/* === PROJECTS SECTION === */
+.projects-section {
+    margin-top: 60px;
+    border-top: 1px dashed #333;
+    padding-top: 40px;
+}
+
+.projects-title {
+    text-align: center;
+    color: var(--accent);
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px var(--accent);
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+/* Декоративные линии по бокам заголовка */
+.projects-title::before, .projects-title::after {
+    content: "";
+    position: absolute;
+    top: 50%; width: 30%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+.projects-title::before { left: 0; }
+.projects-title::after { right: 0; }
+
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+/* === PROJECT CARD (HOLO-STYLE) === */
+.project-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    background: rgba(0, 20, 0, 0.4);
+    border: 1px solid #333;
+    padding: 30px 20px;
+    position: relative;
+    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+}
+
+/* Эффект при наведении */
+.project-card:not(.disabled):hover {
+    background: rgba(0, 255, 65, 0.05);
+    border-color: var(--accent);
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 30px rgba(0, 255, 65, 0.1);
+}
+
+.project-card:not(.disabled):hover .card-icon {
+    color: var(--accent);
+    text-shadow: 0 0 15px var(--accent);
+    transform: scale(1.2);
+}
+
+/* Иконка */
+.card-icon {
+    font-size: 2.5rem;
+    color: #555;
+    margin-bottom: 20px;
+    transition: 0.4s;
+}
+
+/* Контент */
+.card-content {
+    text-align: center;
+    z-index: 2;
+}
+
+.card-content h3 {
+    color: #fff;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+.card-content p {
+    color: #888;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin-bottom: 20px;
+}
+
+/* Статусы (ONLINE / LOCKED) */
+.status-badge {
+    font-size: 0.7rem;
+    padding: 4px 10px;
+    border: 1px solid;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 2px;
+}
+
+.status-online {
+    color: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 5px rgba(0, 255, 65, 0.2);
+}
+
+.status-dev {
+    color: #f1c40f;
+    border-color: #f1c40f;
+}
+
+.status-locked {
+    color: #ff5555;
+    border-color: #ff5555;
+    opacity: 0.7;
+}
+
+/* Стили для отключенных (недоступных) проектов */
+.project-card.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    border-style: dashed;
+}
+
+/* Глитч-эффект при наведении (полоска пробегает) */
+.card-glitch {
+    position: absolute;
+    top: 0; left: -100%;
+    width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0,255,65,0.1), transparent);
+    transform: skewX(-20deg);
+    transition: 0.5s;
+    pointer-events: none;
+}
+
+.project-card:hover .card-glitch {
+    left: 150%;
+    transition: 0.7s;
+}
+
+/* Адаптив */
+@media (max-width: 800px) {
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+}
+

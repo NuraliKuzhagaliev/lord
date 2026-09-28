@@ -1,0 +1,2 @@
+.core small{transition:opacity .35s ease,transform .35s ease}.core small.is-changing{opacity:0;transform:translateY(6px)}
+@media(prefers-reduced-motion:reduce){.core small{transition:none}}

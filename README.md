@@ -29,4 +29,3 @@ Render запускает приложение командой `gunicorn --chdi
 - [NIST CSF 2.0](https://www.nist.gov/cyberframework)
 - [CISA Cybersecurity Performance Goals](https://www.cisa.gov/cybersecurity-performance-goals)
 - [OWASP Risk Rating Methodology](https://owasp.org/www-community/OWASP_Risk_Rating_Methodology)
-

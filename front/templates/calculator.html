@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pifagor Lab — формулы и графики | LORD Security</title>
+    <meta name="description" content="Интерактивный математический калькулятор с графиками, переменными и историей вычислений.">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/mathlive"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/algebrite@1.4.0/dist/algebrite.bundle-for-browser.min.js"></script>
+    <script type="text/javascript" charset="UTF-8" src="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../homepage/home.css">
+    <link rel="stylesheet" href="enhancements.css">
+    <link rel="stylesheet" href="enhancements-extra.css">
+</head>
+<body>
+<a class="skip-link" href="#calculator-main">Перейти к калькулятору</a>
+<header class="lab-header"><a class="lab-brand" href="../homepage/home.html">L<span>.</span> <small>LORD SECURITY</small></a><nav aria-label="Навигация лаборатории"><a href="../homepage/home.html">Главная</a><a href="../homepage/risk.html">Оценка риска</a><a href="../homepage/learn.html">База знаний</a></nav><span class="lab-badge"><i></i> PIFAGOR LAB / ONLINE</span></header>
+<main id="calculator-main">
+<div class="lab-intro"><div><span class="lab-kicker">/ ИНСТРУМЕНТ 02 — MATHEMATICS</span><h1>Формула <em>в действии.</em></h1><p>Считайте, исследуйте графики и сохраняйте ход вычислений. Переменные и история остаются в этой вкладке.</p></div><div class="lab-intro-mark" aria-hidden="true">∑</div></div>
+
+<div class="app-container">
+    
+    <div class="calc-panel">
+        <div class="header">
+            <h2>PIFAGOR / CONSOLE</h2>
+            <div class="status">FORMULA ENGINE • READY</div>
+        </div>
+
+                <!-- Экран -->
+        <div class="screen-box">
+            <!-- Верхняя панелька истории -->
+            <div class="history-controls">
+                <span class="hist-label">> TERMINAL LOG</span>
+                <button class="btn-clear-hist" onclick="clearHistory()" type="button">ОЧИСТИТЬ</button>
+            </div>
+            
+            <div id="history-log"></div>
+            <!-- Поле ввода MathLive -->
+            <math-field id="mf" virtual-keyboard-mode="manual" aria-label="Математическое выражение"></math-field>
+            <div class="result-strip"><span>РЕЗУЛЬТАТ</span><strong id="current-result" aria-live="polite">Ожидание ввода</strong><button id="copy-result" type="button" aria-label="Копировать результат" title="Копировать результат">⧉</button></div>
+        </div>
+
+        <div class="calc-options"><label>Точность <select id="precision"><option value="4">4 знака</option><option value="8" selected>8 знаков</option><option value="12">12 знаков</option></select></label><label>Углы <select id="angle-mode"><option value="rad">Радианы</option><option value="deg">Градусы</option></select></label></div>
+        <div class="examples" aria-label="Примеры"><span>ПОПРОБУЙТЕ:</span><button type="button" data-example="\frac{1}{3}+\sqrt{16}">⅓ + √16</button><button type="button" data-example="\sin(30)">sin(30)</button><button type="button" data-example="x^2-4">x² − 4</button></div>
+
+        <div class="controls">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('main', this)">ЦИФРЫ</button>
+                <button class="tab-btn" onclick="switchTab('funcs', this)">ФУНКЦИИ</button>
+                <button class="tab-btn" onclick="switchTab('vars', this)">ПЕРЕМЕННЫЕ</button>
+                <button class="tab-btn" onclick="switchTab('geo', this)">ГРАФИК</button>
+            </div>
+
+            <!-- MAIN: Только цифры и базовые операции -->
+            <div id="tab-main" class="keypad visible">
+                <button class="btn danger" onclick="clearAll()">CLR</button>
+                <button class="btn" onclick="typeChar('(')">(</button>
+                <button class="btn" onclick="typeChar(')')">)</button>
+                <button class="btn func" onclick="backspace()">⌫</button> <!-- Backspace -->
+
+                <button class="btn num" onclick="typeChar('7')">7</button>
+                <button class="btn num" onclick="typeChar('8')">8</button>
+                <button class="btn num" onclick="typeChar('9')">9</button>
+                <button class="btn op" onclick="typeChar('/')">/</button>
+
+                <button class="btn num" onclick="typeChar('4')">4</button>
+                <button class="btn num" onclick="typeChar('5')">5</button>
+                <button class="btn num" onclick="typeChar('6')">6</button>
+                <button class="btn op" onclick="typeChar('*')">*</button>
+
+                <button class="btn num" onclick="typeChar('1')">1</button>
+                <button class="btn num" onclick="typeChar('2')">2</button>
+                <button class="btn num" onclick="typeChar('3')">3</button>
+                <button class="btn op" onclick="typeChar('-')">-</button>
+
+                <button class="btn num" onclick="typeChar('0')">0</button>
+                <button class="btn num" onclick="typeChar('.')">.</button>
+                <button class="btn action" onclick="solve()">=</button>
+                <button class="btn op" onclick="typeChar('+')">+</button>
+            </div>
+
+            <!-- FUNCTIONS: Тригонометрия переехала сюда -->
+            <div id="tab-funcs" class="keypad hidden">
+                <button class="btn func" onclick="insertCmd('\\sin(')">sin</button>
+                <button class="btn func" onclick="insertCmd('\\cos(')">cos</button>
+                <button class="btn func" onclick="insertCmd('\\tan(')">tan</button>
+                <button class="btn func" onclick="insertCmd('\\cot(')">cot</button>
+
+                <button class="btn func" onclick="integrateCurrent()" title="Численное интегрирование между a и b">∫[a,b]</button>
+                <button class="btn func" onclick="limitCurrent()" title="Двусторонний предел в точке x₀">lim</button>
+                <button class="btn func" onclick="differentiateCurrent()" title="Производная по x">d/dx</button>
+                <button class="btn func" onclick="insertCmd('\\sqrt')">√</button>
+                
+                <button class="btn func" onclick="insertCmd('^2')">x²</button>
+                <button class="btn func" onclick="insertCmd('^')">xʸ</button>
+                <button class="btn func" onclick="insertCmd('\\log(')">log</button>
+                <button class="btn func" onclick="insertCmd('\\ln(')">ln</button>
+                
+                <button class="btn func" onclick="insertCmd('\\pi')">π</button>
+                <button class="btn func" onclick="typeChar('e')">e</button>
+                <button class="btn func" onclick="backspace()">⌫</button>
+                <div class="calculus-inputs"><label>x₀ <input id="calc-point" type="number" value="0" step="any"></label><label>a <input id="calc-lower" type="number" value="0" step="any"></label><label>b <input id="calc-upper" type="number" value="1" step="any"></label></div>
+            </div>
+
+            <div id="tab-vars" class="hidden">
+                <div class="var-form">
+                    <input type="text" id="var-name" placeholder="Имя: a" maxlength="16" aria-label="Имя переменной">
+                    <input type="text" id="var-val" placeholder="Значение: 10" aria-label="Значение переменной">
+                    <button class="btn-save" onclick="saveVar()">SAVE</button>
+                </div>
+                <div id="var-list" class="var-list"></div>
+            </div>
+
+            <div id="tab-geo" class="keypad hidden">
+                <button class="btn tool" onclick="setGeoTool('move')">MOVE</button>
+                <button class="btn tool" onclick="setGeoTool('point')">POINT</button>
+                <button class="btn tool" onclick="setGeoTool('line')">LINE</button>
+                <button class="btn tool" onclick="setGeoTool('circle')">CIRCLE</button>
+                
+                <button class="btn tool action" onclick="plotGraph()">PLOT</button>
+                <button class="btn tool danger" id="erase-btn" onclick="toggleEraseMode()">ERASE</button>
+                <button class="btn tool warning" onclick="exportPDF()">PDF</button>
+                <button class="btn tool" onclick="resetBoard()">СБРОС</button>
+                
+                <!-- НОВАЯ ПАЛИТРА ЦВЕТОВ -->
+                <div class="color-picker" style="grid-column: span 4;">
+                    <div class="color-btn c-cyan active" onclick="setColor('#00bcd4', this)"></div>
+                    <div class="color-btn c-red" onclick="setColor('#ff4081', this)"></div>
+                    <div class="color-btn c-green" onclick="setColor('#00e676', this)"></div>
+                    <div class="color-btn c-yellow" onclick="setColor('#ffeb3b', this)"></div>
+                    <div class="color-btn c-purple" onclick="setColor('#e040fb', this)"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="graph-panel">
+        <div class="graph-header">VISUALIZATION / LIVE GRAPH</div>
+        
+        <!-- НОВАЯ ЛЕГЕНДА -->
+        <div id="legend-box" class="legend-box"></div>
+        
+        <div id="jxgbox" class="jxgbox"></div>
+        <div class="graph-status">
+            TOOL: <span id="tool-status">VIEW</span>
+        </div>
+    </div>
+
+</div>
+</main>
+
+<script src="script.js"></script>
+<script src="enhancements.js"></script>
+</body>
+</html>
+
+
+
+

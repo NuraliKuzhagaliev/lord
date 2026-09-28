@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Cipher Terminal | LORD Security</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Подключаем стили главной для меню -->
+    <link rel="stylesheet" href="../homepage/home.css">
+    <!-- Подключаем стили самого шифратора -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="enhancements.css">
+</head>
+<body>
+
+<!-- === ВСТАВЛЕННОЕ МЕНЮ (NAVBAR) === -->
+<nav class="navbar" aria-label="Навигация"><a class="shift-brand" href="../homepage/home.html">L<span>.</span> <small>LORD SECURITY</small></a><div class="shift-nav"><a href="../homepage/home.html">Главная</a><a href="../homepage/risk.html">Оценка риска</a><a href="../templates/calculator.html">Pifagor Lab</a><a href="../homepage/learn.html">База знаний</a></div></nav>
+<!-- ================================= -->
+
+<!-- Добавляем отступ сверху, чтобы меню не закрывало контент -->
+<div class="container">
+    <header>
+        <div class="shift-kicker">/ ИНСТРУМЕНТ 03 — CRYPTOGRAPHY</div><h1>Cipher Terminal <span class="version">v3.0</span></h1><p class="shift-lead">Изучайте принципы шифрования на практике. Caesar, Vigenère и XOR — только учебные примеры. Для современных сценариев используйте AES-GCM и RSA-OAEP.</p>
+    </header>
+
+    <main>
+        <!-- Algorithm Selection -->
+        <section class="config-section">
+            <label for="algorithm">Algorithm Selection:</label>
+            <select id="algorithm">
+                <option value="caesar">Caesar Cipher (Shift)</option>
+                <option value="vigenere">Vigenère Cipher</option>
+                <option value="xor">XOR Cipher (учебный)</option>
+                <option value="aes">AES-256-GCM (Web Crypto)</option>
+                <option value="rsa">RSA-OAEP 2048 / SHA-256</option>
+            </select>
+        </section>
+
+        <!-- Parameters -->
+        <section id="params-container">
+            <!-- Caesar -->
+            <div id="params-caesar" class="algo-params active">
+                <label>Shift Amount (Key):</label>
+                <input type="number" id="caesar-shift" value="3" min="1" max="25">
+                <small class="note">Shift logic: (Pos + Shift) mod 26</small>
+            </div>
+
+            <!-- Text Key (Vigenere, XOR, AES) -->
+            <div id="params-textkey" class="algo-params">
+                <label for="text-key">Ключ / парольная фраза:</label>
+                <input type="password" id="text-key" placeholder="Для AES — не менее 12 символов" autocomplete="off">
+            </div>
+
+            <!-- RSA -->
+            <div id="params-rsa" class="algo-params">
+                <div class="rsa-controls">
+                    <label>RSA Key Management:</label>
+                    <button id="btn-rsa-gen">Generate New Keypair</button>
+                </div>
+                <div class="rsa-keys">
+                    <textarea id="rsa-pub" placeholder="Public Key" rows="4" readonly></textarea>
+                    <textarea id="rsa-priv" placeholder="Private Key" rows="4" readonly></textarea>
+                </div>
+                <small class="note">RSA-OAEP / 2048 бит / SHA-256. Ключи создаются локально и исчезнут при закрытии страницы. RSA подходит только для коротких сообщений.</small>
+            </div>
+        </section>
+
+        <!-- I/O Panel -->
+        <section class="io-panel">
+            <div class="io-block">
+                <label>Input Text (Plaintext):</label>
+                <textarea id="input-text" rows="4" placeholder="Type message here..."></textarea>
+            </div>
+            <div class="io-block">
+                <label>Output Result:</label>
+                <textarea id="output-text" rows="4" readonly></textarea>
+            </div>
+        </section>
+
+        <!-- Action Buttons -->
+        <section class="actions">
+            <button id="btn-encrypt">ENCRYPT [LOCK]</button>
+            <button id="btn-decrypt">DECRYPT [UNLOCK]</button>
+        </section>
+
+        <!-- Visual Table Section -->
+        <section id="viz-section" class="visualization-section" style="display:none;">
+            <label>Detailed Step-by-Step Visualization:</label>
+            <div class="explanation-text" id="explanation-text"></div>
+            <div class="table-responsive">
+                <table id="viz-table" class="cyber-table">
+                    <thead></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- System Logs -->
+        <section class="visualization">
+            <label>System Log:</label>
+            <div id="viz-log" class="step-log">
+                <div class="log-entry">System ready. Waiting for input...</div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script src="script.js"></script>
+<script src="../homepage/chatbot.js"></script>
+</body>
+</html>
+

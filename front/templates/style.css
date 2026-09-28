@@ -1,0 +1,234 @@
+/* === ACID GREEN THEME v10 === */
+
+:root {
+    --bg-color: #050505;
+    --panel-bg: #0a0a0a;
+    --main-green: #00ff41; /* Тот самый хакерский зеленый */
+    --dim-green: #008f11;
+    --text-color: #e0e0e0;
+    --border-color: #003b00;
+    --glow: 0 0 10px rgba(0, 255, 65, 0.4);
+    --font-stack: 'Courier New', Courier, monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0; padding: 20px;
+    background-color: var(--bg-color);
+    color: var(--main-green);
+    font-family: var(--font-stack);
+    height: 100vh; overflow: hidden;
+    /* Легкая виньетка по краям */
+    background-image: radial-gradient(circle at center, transparent 0%, #000 90%);
+}
+
+.app-container {
+    display: flex; gap: 20px; height: 100%; max-width: 1600px; margin: 0 auto;
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    box-shadow: inset 0 0 50px rgba(0, 50, 0, 0.5);
+}
+
+/* === ЛЕВАЯ ПАНЕЛЬ === */
+.calc-panel {
+    flex: 0 0 450px; display: flex; flex-direction: column;
+    background: var(--panel-bg); 
+    border-right: 2px solid var(--dim-green);
+    padding: 15px;
+}
+
+.header { 
+    border-bottom: 2px solid var(--main-green); 
+    margin-bottom: 20px; padding-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 5px var(--main-green);
+}
+.header h2 { margin: 0; font-size: 1.4rem; }
+.status { font-size: 0.7rem; color: var(--dim-green); margin-top: 5px; }
+
+/* === ЭКРАН === */
+.screen-box {
+    flex: 1; 
+    display: flex; 
+    flex-direction: column;
+    background: #000; 
+    border: 1px solid var(--dim-green); 
+    padding: 10px; 
+    margin-bottom: 20px; 
+    box-shadow: inset 0 0 15px rgba(0, 255, 0, 0.1);
+    
+    /* ВАЖНО: Ограничиваем минимальную и максимальную высоту */
+    min-height: 200px; /* Чтобы не сплющился */
+    overflow: hidden;  /* Чтобы ничего не вылезало наружу */
+}
+
+.history-controls {
+    display: flex; justify-content: space-between; border-bottom: 1px dashed var(--dim-green); padding-bottom: 5px; margin-bottom: 10px;
+}
+.hist-label { color: var(--dim-green); font-size: 0.8rem; }
+.btn-clear-hist {
+    background: transparent; border: 1px solid var(--dim-green); color: var(--dim-green);
+    cursor: pointer; font-family: inherit; font-size: 0.7rem; text-transform: uppercase;
+}
+.btn-clear-hist:hover { background: var(--dim-green); color: #000; }
+
+#history-log {
+    flex: 1; /* Занимает все свободное место над полем ввода */
+    overflow-y: auto; /* Включаем вертикальный скролл */
+    
+    /* Косметика */
+    color: #888; 
+    font-size: 0.9rem; 
+    margin-bottom: 10px; 
+    padding-right: 5px;
+    font-family: var(--font-stack);
+    
+    /* Фикс для Chrome/Safari, чтобы скроллбар не был поверх текста */
+    scrollbar-width: thin;
+    scrollbar-color: var(--dim-green) #000;
+}
+.log-item { margin-bottom: 10px; border-bottom: 1px solid #111; padding-bottom: 5px; }
+.log-res { color: var(--main-green); text-align: right; font-weight: bold; font-size: 1.1rem; }
+
+/* Поле ввода */
+math-field {
+    width: 100%; 
+    background: #050505; 
+    color: var(--main-green);
+    border: 1px solid var(--main-green);
+    padding: 15px; font-size: 1.3rem;
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.1);
+    --caret-color: var(--main-green);
+}
+math-field:focus { outline: none; box-shadow: 0 0 20px rgba(0, 255, 65, 0.3); }
+
+/* === УПРАВЛЕНИЕ === */
+.controls { flex: 0 0 auto; }
+.tabs { display: flex; gap: 2px; margin-bottom: 15px; border-bottom: 1px solid var(--dim-green); }
+.tab-btn {
+    flex: 1; padding: 10px; 
+    background: #111; border: 1px solid transparent; 
+    color: var(--dim-green); 
+    cursor: pointer; font-family: inherit; font-weight: bold; letter-spacing: 1px;
+}
+.tab-btn:hover { color: var(--main-green); }
+.tab-btn.active {
+    background: var(--dim-green); color: #000; border-color: var(--main-green);
+}
+
+.keypad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.hidden { display: none; }
+
+.btn {
+    padding: 15px; font-size: 1.2rem; 
+    background: #080808; 
+    border: 1px solid var(--dim-green); 
+    color: var(--main-green);
+    cursor: pointer; transition: 0.1s;
+    font-family: inherit;
+    text-shadow: 0 0 2px var(--main-green);
+}
+.btn:hover {
+    background: var(--main-green); color: #000; box-shadow: var(--glow); text-shadow: none;
+}
+.btn:active { transform: translateY(2px); }
+
+.btn.op { border-color: #fff; color: #fff; text-shadow: none; }
+.btn.action { 
+    background: rgba(0, 255, 65, 0.1); border-color: var(--main-green); font-weight: bold; 
+}
+.btn.danger { border-color: #ff3333; color: #ff3333; text-shadow: 0 0 5px #ff3333; }
+.btn.danger:hover { background: #ff3333; color: #000; box-shadow: 0 0 15px #ff3333; }
+.btn.erase-active { background: #ff3333; color: #fff; animation: blink 1s infinite; }
+@keyframes blink { 50% { opacity: 0.5; } }
+
+/* === ПРАВАЯ ПАНЕЛЬ === */
+.graph-panel {
+    flex: 1; display: flex; flex-direction: column;
+    background: #050505; border: 1px solid var(--dim-green); padding: 5px;
+    position: relative;
+}
+
+/* ... старые стили .graph-panel ... */
+
+/* ЛЕГЕНДА ГРАФИКОВ (Список справа сверху) */
+.legend-box {
+    position: absolute;
+    top: 10px; right: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid var(--dim-green);
+    padding: 10px;
+    max-width: 200px;
+    z-index: 100;
+}
+.legend-item {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 0.8rem; color: #ddd; margin-bottom: 5px;
+}
+.legend-color { width: 12px; height: 12px; border-radius: 50%; }
+
+/* ПАЛИТРА ЦВЕТОВ (Внизу, рядом с кнопками) */
+.color-picker {
+    display: flex; gap: 5px; margin-top: 5px; justify-content: center;
+}
+.color-btn {
+    width: 20px; height: 20px; border-radius: 50%; cursor: pointer;
+    border: 2px solid #333; transition: 0.2s;
+}
+.color-btn.active { border-color: #fff; transform: scale(1.2); }
+
+/* Цвета для кнопок */
+.c-cyan { background: #00bcd4; }
+.c-red { background: #ff4081; }
+.c-green { background: #00e676; }
+.c-yellow { background: #ffeb3b; }
+.c-purple { background: #e040fb; }
+
+
+.graph-header { 
+    position: absolute; top: 10px; left: 15px; 
+    color: var(--dim-green); z-index: 10; font-size: 0.8rem; letter-spacing: 2px;
+}
+.graph-status { 
+    position: absolute;  right: 15px; top: 10px; 
+    color: var(--text-color); font-size: 0.8rem; z-index: 10;
+}
+#tool-status { color: var(--main-green); font-weight: bold; text-shadow: 0 0 5px var(--main-green); }
+
+/* JSXGraph стили */
+#jxgbox {
+    width: 100%; height: 100%;
+    /* Глубокий черный фон, чтобы зеленый светился */
+    background-color: #020202; 
+    border: none;
+}
+.JXGtext {
+    font-family: 'Courier New', monospace !important;
+    text-shadow: none !important;
+}
+
+/* === ПЕРЕМЕННЫЕ === */
+.var-form { display: flex; gap: 10px; margin-bottom: 15px; }
+.var-form input { 
+    flex: 1; background: #000; border: 1px solid var(--dim-green); 
+    color: var(--main-green); padding: 10px; font-family: inherit; 
+}
+.btn-save { 
+    background: var(--dim-green); color: #000; border: none; padding: 0 20px; cursor: pointer; font-weight: bold;
+}
+.var-tag {
+    background: #002200; border: 1px solid var(--dim-green); padding: 5px 10px; margin-right: 5px; margin-bottom: 5px;
+    display: inline-block; cursor: pointer; position: relative; padding-right: 25px;
+}
+.var-tag:hover { border-color: var(--main-green); box-shadow: var(--glow); }
+.del-btn { position: absolute; right: 5px; color: #ff3333; font-weight: bold; display: none; }
+.var-tag:hover .del-btn { display: block; }
+
+/* СКРОЛЛБАРЫ */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-thumb { background: var(--dim-green); }
+::-webkit-scrollbar-thumb:hover { background: var(--main-green); }
+
