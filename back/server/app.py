@@ -1,7 +1,7 @@
 """LORD Security development server and optional assistant API.
 
 Run from the repository root: python back/server/app.py
-Set LORD_SECRET_KEY and LORD_GROQ_API_KEY through environment variables in deployment.
+Set LORD_SECRET_KEY and FreeLLMAPI connection settings through environment variables.
 """
 from __future__ import annotations
 
@@ -15,6 +15,7 @@ from collections import defaultdict, deque
 from pathlib import Path
 from urllib import error as urlerror
 from urllib import request as urlrequest
+from urllib.parse import urlsplit
 import json
 
 from flask import Flask, jsonify, redirect, request, session
@@ -38,7 +39,24 @@ app.config.update(
 )
 bcrypt = Bcrypt(app)
 attempts: dict[tuple[str, str], deque[float]] = defaultdict(deque)
-_assistant_model: str | None = None
+
+def assistant_connection():
+    """Return the configured FreeLLMAPI endpoint and key, without exposing them."""
+    base = (os.environ.get("LORD_FREELLMAPI_BASE_URL") or "").strip().rstrip("/")
+    key = (os.environ.get("LORD_FREELLMAPI_API_KEY") or "").strip()
+    if not base or not key:
+        return None
+    try:
+        parsed = urlsplit(base)
+    except ValueError:
+        return None
+    if parsed.scheme not in ("http", "https") or not parsed.hostname or parsed.username or parsed.password or parsed.query or parsed.fragment:
+        return None
+    if os.environ.get("LORD_HOSTED") == "1" and parsed.hostname.lower() in ("localhost", "127.0.0.1", "::1"):
+        return None
+    if not parsed.path.endswith("/v1"):
+        return None
+    return base + "/chat/completions", key
 
 
 def database():
@@ -221,7 +239,6 @@ def profile():
 
 @app.post("/api/assistant")
 def assistant():
-    global _assistant_model
     data = request.get_json(silent=True) or {}
     language = "en" if data.get("language") == "en" else "ru"
     errors = {
@@ -232,9 +249,10 @@ def assistant():
     }
     if rate_limited("assistant", 15, 900):
         return jsonify(error=errors["rate"]), 429
-    api_key = (os.environ.get("LORD_GROQ_API_KEY") or "").strip()
-    if not api_key:
+    connection = assistant_connection()
+    if not connection:
         return jsonify(error=errors["unavailable"]), 503
+    endpoint, api_key = connection
     prompt = str(data.get("message") or "").strip()
     if not prompt or len(prompt) > 1500:
         return jsonify(error=errors["input"]), 400
@@ -247,76 +265,54 @@ def assistant():
         "Не утверждай, что был проведён аудит, и не выдумывай факты о компании. "
         "Пиши естественным языком и короткими абзацами. Не используй Markdown, звёздочки, вертикальные черты, таблицы и декоративные символы."
     )
-    preferred = os.environ.get("LORD_GROQ_MODEL", "openai/gpt-oss-120b")
-    models = list(dict.fromkeys(filter(None, (
-        _assistant_model, preferred, "openai/gpt-oss-120b", "qwen/qwen3.8-27b", "openai/gpt-oss-20b"
-    ))))
-    for model in models:
-        payload = json.dumps({
-            "model": model,
-            "messages": [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": prompt},
-            ],
-            "temperature": 0.3,
-            "max_tokens": 700,
-        }).encode()
-        upstream = urlrequest.Request(
-            "https://api.groq.com/openai/v1/chat/completions",
-            data=payload,
-            headers={
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json",
-                "User-Agent": "LORD-Security/1.0",
-            },
-            method="POST",
-        )
-        try:
-            with urlrequest.urlopen(upstream, timeout=15) as response:
-                result = json.load(response)
-            answer = result["choices"][0]["message"]["content"]
-            if not answer:
-                raise ValueError("Empty answer")
-            _assistant_model = model
-            return jsonify(answer=answer)
-        except urlerror.HTTPError as exc:
-            raw_error = exc.read()
-            try:
-                provider_error = json.loads(raw_error).get("error") or {}
-                provider_code = provider_error.get("code") or provider_error.get("type") or "unknown"
-            except (ValueError, AttributeError):
-                provider_code = "unknown"
-            provider_code = re.sub(r"[^a-zA-Z0-9_-]", "", str(provider_code))[:80]
-            content_type = exc.headers.get("Content-Type", "unknown").split(";")[0]
-            server_name = re.sub(r"[^a-zA-Z0-9_.-]", "", exc.headers.get("Server", "unknown"))[:60]
-            app.logger.warning(
-                "Groq model %s rejected with HTTP %s (%s), content_type=%s server=%s bytes=%s",
-                model, exc.code, provider_code, content_type, server_name, len(raw_error)
-            )
-            if exc.code in (403, 404):
-                continue
-            details = {
-                400: ("Groq rejected the request. Check the configured model.", "Groq отклонил запрос. Проверьте выбранную модель."),
-                401: ("Groq rejected the API key. Check LORD_GROQ_API_KEY in Render.", "Groq отклонил API-ключ. Проверьте LORD_GROQ_API_KEY в Render."),
-                429: ("Groq request limit reached. Try again later.", "Достигнут лимит запросов Groq. Повторите позже."),
-            }
-            en, ru = details.get(exc.code, ("Groq is temporarily unavailable.", "Groq временно недоступен."))
-            return jsonify(error=en if language == "en" else ru), 502
-        except (urlerror.URLError, KeyError, ValueError, TimeoutError):
-            app.logger.warning("Groq assistant request failed without an HTTP response")
-            return jsonify(error=errors["upstream"]), 502
-    return jsonify(error=(
-        "No accessible Groq model was found for this API key."
-        if language == "en" else "Для этого API-ключа не найдена доступная модель Groq."
-    )), 502
+    payload = json.dumps({
+        "model": (os.environ.get("LORD_FREELLMAPI_MODEL") or "auto").strip() or "auto",
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": prompt},
+        ],
+        "temperature": 0.3,
+        "max_tokens": 700,
+    }).encode()
+    upstream = urlrequest.Request(
+        endpoint,
+        data=payload,
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+            "User-Agent": "LORD-Security/1.0",
+        },
+        method="POST",
+    )
+    try:
+        with urlrequest.urlopen(upstream, timeout=20) as response:
+            result = json.load(response)
+        answer = result["choices"][0]["message"]["content"]
+        if not isinstance(answer, str) or not answer.strip():
+            raise ValueError("Empty answer")
+        return jsonify(answer=answer)
+    except urlerror.HTTPError as exc:
+        app.logger.warning("FreeLLMAPI request rejected with HTTP %s", exc.code)
+        details = {
+            400: ("The AI router rejected this request. Check the selected model.", "AI шлюз отклонил запрос. Проверьте выбранную модель."),
+            401: ("The AI router rejected its API key.", "AI шлюз отклонил API-ключ."),
+            403: ("The AI router denied access.", "AI шлюз запретил доступ."),
+            429: ("The AI router reached its request limit. Try again later.", "AI шлюз достиг лимита запросов. Повторите позже."),
+        }
+        en, ru = details.get(exc.code, ("The AI router is temporarily unavailable.", "AI шлюз временно недоступен."))
+        return jsonify(error=en if language == "en" else ru), 502
+    except (urlerror.URLError, KeyError, IndexError, TypeError, ValueError, TimeoutError):
+        app.logger.warning("FreeLLMAPI request failed without a usable response")
+        return jsonify(error=errors["upstream"]), 502
 
 
 @app.get("/api/assistant/status")
 def assistant_status():
-    return jsonify(configured=bool((os.environ.get("LORD_GROQ_API_KEY") or "").strip()))
+    return jsonify(configured=assistant_connection() is not None)
 
 
 init_db()
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=5000, debug=False)
+
